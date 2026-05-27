@@ -1,0 +1,645 @@
+
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --kp:#4B3FE4;--kp2:#3730c4;--kpl:#EEEDFE;--kpm:#7F77DD;
+  --ka:#2DDBA4;--kad:#0F6E56;
+  --kg:#f5f6fa;--kb:#e2e2f0;
+  --kt:#1a1a2e;--km:#6b6b8a;--kw:#ffffff;
+}
+body{background:var(--kg);font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;color:var(--kt)}
+
+.header{background:var(--kp);padding:0 20px;display:flex;align-items:center;gap:12px;height:52px}
+.header-title{color:#fff;font-size:15px;font-weight:600;letter-spacing:-.2px}
+.header-title span{color:var(--ka)}
+.header-right{margin-left:auto;display:flex;gap:8px}
+.btn-hdr{background:rgba(255,255,255,0.15);border:none;color:#fff;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:5px;font-family:'Plus Jakarta Sans',sans-serif}
+.btn-hdr:hover{background:rgba(255,255,255,0.25)}
+
+.settings-bar{display:none;background:#fff;border-bottom:1px solid var(--kb);padding:16px 20px}
+.settings-inner{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.sp-block{background:var(--kg);border:0.5px solid var(--kb);border-radius:8px;padding:14px 16px}
+.sp-title{font-size:13px;font-weight:600;color:var(--kt);margin-bottom:4px}
+.sp-desc{font-size:11px;color:var(--km);margin-bottom:12px;line-height:1.5}
+.weight-row{display:flex;align-items:center;gap:8px;margin-bottom:9px}
+.weight-label{font-size:12px;color:var(--kt);width:120px;flex-shrink:0}
+.weight-input{width:56px;border:0.5px solid var(--kb);border-radius:4px;padding:5px 6px;font-size:12px;text-align:center;font-family:'Plus Jakarta Sans',sans-serif;background:#fff;outline:none}
+.weight-input:focus{border-color:var(--kp)}
+.weight-pct{font-size:11px;color:var(--km);width:30px}
+.weight-track{flex:1;height:6px;background:#E5E7EB;border-radius:3px;overflow:hidden}
+.weight-fill{height:100%;background:var(--kp);border-radius:3px;transition:width .3s}
+.total-row{font-size:11px;color:var(--km);margin-top:4px}
+.total-ok{color:var(--kad);font-weight:600}.total-bad{color:#dc2626;font-weight:600}
+.api-row{display:flex;gap:8px;align-items:center}
+.api-input{flex:1;border:0.5px solid var(--kb);border-radius:5px;padding:7px 10px;font-size:12px;font-family:monospace;background:#fff;outline:none}
+.api-input:focus{border-color:var(--kp)}
+.btn-save-key{background:var(--kp);color:#fff;border:none;border-radius:5px;padding:7px 14px;font-size:12px;font-weight:600;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;white-space:nowrap}
+.key-status{font-size:11px;margin-top:6px}
+.key-ok{color:var(--kad)}.key-none{color:var(--km)}
+
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;padding:16px 20px 12px}
+.stat-c{background:var(--kw);border:0.5px solid var(--kb);border-radius:8px;padding:12px 16px}
+.sv{font-size:24px;font-weight:600;line-height:1;margin-bottom:4px}
+.sl{font-size:11px;color:var(--km);text-transform:uppercase;letter-spacing:.06em}
+.sv-p{color:var(--kp)}.sv-r{color:#dc2626}.sv-o{color:#d97706}.sv-g{color:var(--kad)}
+
+.nav-bar{display:flex;align-items:center;gap:2px;padding:0 20px;background:var(--kw);border-bottom:1px solid var(--kb);border-top:1px solid var(--kb)}
+.nav-tab{padding:11px 16px;font-size:12px;font-weight:500;color:var(--km);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap}
+.nav-tab:hover{color:var(--kp)}
+.nav-tab.active{color:var(--kp);border-bottom-color:var(--kp)}
+.nav-right{margin-left:auto;display:flex;gap:6px;padding:7px 0}
+.btn-add{background:var(--kp);color:#fff;border:none;border-radius:6px;padding:6px 14px;font-size:12px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:4px;font-family:'Plus Jakarta Sans',sans-serif}
+.btn-add:hover{background:var(--kp2)}
+
+.filters{display:flex;gap:8px;padding:10px 20px;background:var(--kw);border-bottom:1px solid var(--kb);flex-wrap:wrap;align-items:center}
+.sel{background:var(--kg);border:0.5px solid var(--kb);color:var(--kt);font-size:12px;padding:6px 9px;border-radius:5px;cursor:pointer;outline:none;font-family:'Plus Jakarta Sans',sans-serif}
+.sel:focus{border-color:var(--kp)}
+.btn-reset{background:none;border:0.5px solid var(--kb);color:var(--km);font-size:11px;padding:6px 12px;border-radius:5px;cursor:pointer;margin-left:auto;font-family:'Plus Jakarta Sans',sans-serif}
+.filter-count{font-size:12px;color:var(--km)}
+
+.view-panel{display:none}.view-panel.active{display:block}
+.body-split{display:grid;grid-template-columns:1fr 210px;background:var(--kb);gap:1px}
+.main-area{background:var(--kw)}
+.sidebar{background:var(--kg);padding:14px}
+
+table{width:100%;border-collapse:collapse;table-layout:fixed}
+thead th{font-size:11px;color:var(--km);text-transform:uppercase;letter-spacing:.06em;padding:9px 12px;border-bottom:1px solid var(--kb);text-align:left;font-weight:500;white-space:nowrap;cursor:pointer;user-select:none}
+thead th:hover{color:var(--kp)}
+thead th.sort-active{color:var(--kp)}
+thead th .sort-arrow{font-size:10px;margin-left:3px;opacity:.6}
+tbody tr{border-bottom:0.5px solid var(--kb);cursor:pointer;transition:background .12s}
+tbody tr:hover{background:#f8f8ff}
+tbody tr.expanded{background:var(--kpl)}
+tbody tr.dragging{opacity:.4}
+tbody tr.drag-over td{border-top:2px solid var(--kp)}
+tbody td{padding:9px 12px;vertical-align:middle;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px}
+.detail-row td{padding:0;cursor:default}
+.detail-box{background:var(--kpl);border-bottom:1px solid var(--kb);padding:14px 20px 16px;display:none}
+.detail-box.open{display:block}
+.detail-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px}
+.dg-item{background:var(--kw);border:0.5px solid var(--kb);border-radius:6px;padding:8px 10px}
+.di-l{font-size:11px;color:var(--km);margin-bottom:3px}
+.di-v{font-size:12px;color:var(--kt);font-weight:500}
+.score-breakdown{background:var(--kw);border:0.5px solid var(--kb);border-radius:8px;padding:12px 14px}
+.sb-title{font-size:11px;font-weight:600;color:var(--kt);margin-bottom:10px;text-transform:uppercase;letter-spacing:.05em}
+.sb-row{display:grid;grid-template-columns:130px repeat(5,1fr) 50px;gap:4px;align-items:center;margin-bottom:7px}
+.sb-label{font-size:12px;color:var(--km)}
+.sb-val{height:26px;border:0.5px solid var(--kb);border-radius:4px;text-align:center;font-size:12px;font-weight:500;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;background:#fff}
+.sb-val.selected{background:var(--kp);color:#fff;border-color:var(--kp)}
+.sb-result{font-size:11px;color:var(--km);text-align:right}
+
+.badge{display:inline-block;padding:3px 8px;border-radius:4px;font-size:11px;font-weight:500}
+.b-alta{background:#FEE2E2;color:#991B1B}
+.b-media{background:#FEF3C7;color:#92400E}
+.b-baja{background:#D1FAE5;color:#065F46}
+.b-sinrevisar{background:#F3F4F6;color:#6B7280}
+.b-analisis{background:#DBEAFE;color:#1E40AF}
+.b-priorizado{background:var(--kpl);color:var(--kp)}
+.b-desarrollo{background:#FEF9C3;color:#854D0E}
+.b-entregado{background:#D1FAE5;color:#065F46}
+.b-descartado{background:#FEE2E2;color:#991B1B}
+.b-backlog{background:#F3F4F6;color:#9CA3AF}
+
+.drag-handle{cursor:grab;color:#ccc;font-size:16px;padding:0 4px;user-select:none}
+.drag-handle:hover{color:var(--kpm)}
+.score-hi{color:var(--kp);font-weight:600}
+.score-mi{color:#d97706;font-weight:600}
+.score-lo{color:var(--km);font-weight:600}
+.score-sub{font-size:10px;color:var(--km);display:block}
+
+.est-sel{background:var(--kg);border:0.5px solid var(--kb);color:var(--kt);font-size:11px;padding:4px 6px;border-radius:4px;cursor:pointer;outline:none;max-width:105px;font-family:'Plus Jakarta Sans',sans-serif;font-weight:500}
+.est-sel:focus{border-color:var(--kp)}
+.ic-btn{width:26px;height:26px;border:0.5px solid var(--kb);border-radius:4px;background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--km)}
+.ic-btn:hover{border-color:var(--kpm);color:var(--kp)}
+.ic-btn.del{color:#dc2626;border-color:#FECACA}
+.ic-btn.del:hover{background:#FEE2E2}
+.action-cell{display:flex;gap:4px;justify-content:flex-end}
+
+.side-title{font-size:11px;font-weight:600;color:var(--km);text-transform:uppercase;letter-spacing:.06em;margin-bottom:9px}
+.bar-group{margin-bottom:9px}
+.bar-row{display:flex;justify-content:space-between;font-size:11px;color:var(--km);margin-bottom:3px}
+.track{height:7px;background:#E5E7EB;border-radius:4px;overflow:hidden}
+.fill{height:100%;border-radius:4px;transition:width .4s}
+.f-r{background:#dc2626}.f-o{background:#d97706}.f-g{background:var(--ka)}
+.est-list{display:flex;flex-direction:column;gap:6px}
+.est-row{display:flex;align-items:center;justify-content:space-between;font-size:11px;color:var(--km)}
+.edot{width:8px;height:8px;border-radius:50%;margin-right:6px;flex-shrink:0;display:inline-block}
+
+.kanban-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:16px 20px}
+.kan-col{background:var(--kw);border:0.5px solid var(--kb);border-radius:8px;overflow:hidden;min-height:80px}
+.kan-head{padding:10px 12px;font-size:12px;font-weight:600;border-bottom:0.5px solid var(--kb);display:flex;justify-content:space-between;align-items:center}
+.kh-sin{color:#6B7280}.kh-ana{color:#1E40AF}.kh-pri{color:var(--kp)}.kh-dev{color:#854D0E}.kh-ent{color:#065F46}.kh-back{color:#9CA3AF}.kh-des{color:#991B1B}
+.kan-card{padding:9px 12px;border-bottom:0.5px solid var(--kb)}
+.kan-card:last-child{border-bottom:none}
+.kc-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:3px}
+.kc-cli{font-weight:600;font-size:12px;color:var(--kt)}
+.kc-ped{font-size:11px;color:var(--km);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.kc-date{font-size:10px;color:#9CA3AF;margin-top:3px}
+
+.cli-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;padding:16px 20px}
+.cli-card{background:var(--kw);border:0.5px solid var(--kb);border-radius:10px;padding:14px 16px;cursor:pointer;transition:border-color .15s}
+.cli-card:hover{border-color:var(--kpm)}
+.cc-header{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.cc-avatar{width:34px;height:34px;border-radius:8px;background:var(--kpl);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;color:var(--kp);flex-shrink:0}
+.cc-name{font-weight:600;font-size:13px;color:var(--kt)}
+.cc-date{font-size:11px;color:var(--km)}
+.cc-ped{font-size:12px;color:var(--km);margin-bottom:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cc-tags{display:flex;gap:4px;flex-wrap:wrap}
+
+.alert-wrap{padding:16px 20px}
+.alert-section-title{font-size:12px;font-weight:600;color:var(--km);margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.alert-item{background:var(--kw);border:0.5px solid #FECACA;border-left:3px solid #dc2626;border-radius:6px;padding:11px 14px;margin-bottom:9px}
+.ai-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:5px}
+.ai-title{font-weight:600;font-size:12px;color:var(--kt)}
+.ai-badge{font-size:10px;background:#FEE2E2;color:#991B1B;padding:2px 7px;border-radius:3px;white-space:nowrap}
+.ai-desc{font-size:11px;color:var(--km);line-height:1.5}
+.ai-empty{background:var(--kw);border:0.5px solid var(--kb);border-radius:6px;padding:20px;text-align:center;font-size:12px;color:var(--km);margin-bottom:10px}
+.ai-cta{display:flex;justify-content:center;margin-top:10px}
+.btn-analyze{background:var(--kp);color:#fff;border:none;border-radius:6px;padding:8px 16px;font-size:12px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;font-family:'Plus Jakarta Sans',sans-serif}
+.btn-analyze:hover{background:var(--kp2)}
+.btn-analyze:disabled{opacity:.5;cursor:not-allowed}
+.analyzing-msg{font-size:12px;color:var(--kpm);text-align:center;padding:8px;display:none}
+
+.modal-wrap{display:none;position:absolute;inset:0;background:rgba(74,63,228,0.15);align-items:center;justify-content:center;z-index:50}
+.modal-box{background:var(--kw);border-radius:10px;border:0.5px solid var(--kb);width:480px;overflow:hidden}
+.modal-head{background:var(--kp);color:#fff;padding:14px 18px;font-size:14px;font-weight:600;display:flex;justify-content:space-between;align-items:center}
+.modal-close{background:none;border:none;color:rgba(255,255,255,0.7);font-size:18px;cursor:pointer;line-height:1}
+.modal-close:hover{color:#fff}
+.modal-body{padding:16px 18px;display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.field-g{display:flex;flex-direction:column;gap:5px}
+.field-g.span2{grid-column:1/-1}
+.field-label{font-size:11px;color:var(--km);text-transform:uppercase;letter-spacing:.05em;font-weight:500}
+.field-input{border:0.5px solid var(--kb);border-radius:5px;padding:7px 9px;font-size:12px;color:var(--kt);background:var(--kg);outline:none;font-family:'Plus Jakarta Sans',sans-serif}
+.field-input:focus{border-color:var(--kp);background:#fff}
+.field-select{border:0.5px solid var(--kb);border-radius:5px;padding:7px 9px;font-size:12px;color:var(--kt);background:var(--kg);outline:none;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif}
+.val-btns{display:flex;gap:4px}
+.val-btn{width:32px;height:28px;border:0.5px solid var(--kb);border-radius:4px;background:#fff;font-size:12px;font-weight:500;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif}
+.val-btn.sel{background:var(--kp);color:#fff;border-color:var(--kp)}
+.score-preview{background:var(--kpl);border-radius:6px;padding:10px 12px;display:flex;align-items:center;justify-content:space-between}
+.sp-label{font-size:12px;color:var(--kp);font-weight:500}
+.sp-val{font-size:18px;font-weight:700;color:var(--kp)}
+.modal-footer{padding:12px 18px;border-top:1px solid var(--kb);display:flex;justify-content:flex-end;gap:8px}
+.btn-cancel{padding:7px 14px;border:0.5px solid var(--kb);border-radius:5px;font-size:12px;color:var(--km);background:none;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif}
+.btn-save{padding:7px 16px;background:var(--kp);color:#fff;border:none;border-radius:5px;font-size:12px;font-weight:600;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif}
+
+.confirm-wrap{display:none;position:absolute;inset:0;background:rgba(74,63,228,0.15);align-items:center;justify-content:center;z-index:60}
+.confirm-box{background:var(--kw);border-radius:10px;border:0.5px solid var(--kb);padding:22px;width:300px;text-align:center}
+.confirm-box h3{font-size:14px;font-weight:600;color:var(--kt);margin-bottom:6px}
+.confirm-box p{font-size:12px;color:var(--km);margin-bottom:16px}
+.confirm-btns{display:flex;gap:8px;justify-content:center}
+</style>
+
+<div style="position:relative;min-height:600px" id="app">
+
+<div class="header">
+  <div class="header-title">Gestión de requerimientos — <span>Kunzapp</span></div>
+  <div class="header-right">
+    <button class="btn-hdr" onclick="toggleSettings()"><i class="ti ti-settings" style="font-size:14px" aria-hidden="true"></i> Configuración</button>
+  </div>
+</div>
+
+<div class="settings-bar" id="settings-bar">
+  <div class="settings-inner">
+    <div class="sp-block">
+      <div class="sp-title">Ponderaciones del score</div>
+      <div class="sp-desc">Ajusta el peso de cada dimensión. El total debe sumar 100%.</div>
+      <div class="weight-row">
+        <span class="weight-label">Urgencia</span>
+        <input class="weight-input" id="w-urg" type="number" min="0" max="100" value="40" oninput="updateWeights()">
+        <span class="weight-pct" id="wp-urg">40%</span>
+        <div class="weight-track"><div class="weight-fill" id="wf-urg" style="width:40%"></div></div>
+      </div>
+      <div class="weight-row">
+        <span class="weight-label">Tamaño cliente</span>
+        <input class="weight-input" id="w-tam" type="number" min="0" max="100" value="25" oninput="updateWeights()">
+        <span class="weight-pct" id="wp-tam">25%</span>
+        <div class="weight-track"><div class="weight-fill" id="wf-tam" style="width:25%"></div></div>
+      </div>
+      <div class="weight-row">
+        <span class="weight-label">Facilidad</span>
+        <input class="weight-input" id="w-fac" type="number" min="0" max="100" value="35" oninput="updateWeights()">
+        <span class="weight-pct" id="wp-fac">35%</span>
+        <div class="weight-track"><div class="weight-fill" id="wf-fac" style="width:35%"></div></div>
+      </div>
+      <div class="total-row" id="weight-total">Total: <span class="total-ok">100%</span></div>
+    </div>
+    <div class="sp-block">
+      <div class="sp-title">API Key — Análisis IA de duplicados</div>
+      <div class="sp-desc">Ingresa tu API Key de Anthropic para activar la detección semántica de pedidos duplicados.</div>
+      <div class="api-row">
+        <input class="api-input" type="password" id="api-key-input" placeholder="sk-ant-...">
+        <button class="btn-save-key" onclick="saveKey()">Guardar</button>
+      </div>
+      <div class="key-status" id="key-status"><span class="key-none">Sin API Key configurada</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="stats-row" id="stats-row"></div>
+
+<div class="nav-bar">
+  <div class="nav-tab active" onclick="setView('tabla',this)">Tabla</div>
+  <div class="nav-tab" onclick="setView('kanban',this)">Kanban</div>
+  <div class="nav-tab" onclick="setView('clientes',this)">Por cliente</div>
+  <div class="nav-tab" onclick="setView('alertas',this)">Alertas</div>
+  <div class="nav-right">
+    <button class="btn-add" onclick="openModal()"><i class="ti ti-plus" style="font-size:14px" aria-hidden="true"></i> Nuevo pedido</button>
+  </div>
+</div>
+
+<div id="view-tabla" class="view-panel active">
+  <div class="filters">
+    <select class="sel" id="f-urg" onchange="renderTabla()"><option value="">Urgencia</option><option>Alta</option><option>Media</option><option>Baja</option></select>
+    <select class="sel" id="f-est" onchange="renderTabla()"><option value="">Estado</option><option>Sin revisar</option><option>En análisis</option><option>Priorizado</option><option>En desarrollo</option><option>Entregado</option><option>Descartado</option><option>Backlog</option></select>
+    <select class="sel" id="f-cli" onchange="renderTabla()"><option value="">Cliente</option></select>
+    <span class="filter-count" id="filter-count"></span>
+    <button class="btn-reset" onclick="resetFilters()">↺ Limpiar filtros</button>
+  </div>
+  <div class="body-split">
+    <div class="main-area">
+      <table>
+        <thead>
+          <tr>
+            <th style="width:28px" id="th-drag" onclick="setSort('manual')" title="Orden manual drag & drop">⠿</th>
+            <th style="width:80px" onclick="setSort('nombre')">Cliente <span class="sort-arrow" id="sa-nombre"></span></th>
+            <th style="width:150px">Pedido</th>
+            <th style="width:70px" onclick="setSort('fecha')">Fecha <span class="sort-arrow" id="sa-fecha"></span></th>
+            <th style="width:60px" onclick="setSort('urgencia')">Urgencia <span class="sort-arrow" id="sa-urgencia"></span></th>
+            <th style="width:90px" onclick="setSort('score')">Score (U/T/F) <span class="sort-arrow" id="sa-score">↓</span></th>
+            <th style="width:110px" onclick="setSort('estado')">Estado <span class="sort-arrow" id="sa-estado"></span></th>
+            <th style="width:44px"></th>
+          </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+      <div id="table-empty" style="display:none;padding:30px;text-align:center;color:var(--km);font-size:12px">Sin pedidos con estos filtros.</div>
+    </div>
+    <div class="sidebar">
+      <div class="side-title">Por urgencia</div>
+      <div id="chart-urg"></div>
+      <div class="side-title" style="margin-top:16px">Por estado</div>
+      <div class="est-list" id="chart-est"></div>
+    </div>
+  </div>
+</div>
+
+<div id="view-kanban" class="view-panel"><div class="kanban-grid" id="kanban-grid"></div></div>
+<div id="view-clientes" class="view-panel"><div class="cli-grid" id="cli-grid"></div></div>
+<div id="view-alertas" class="view-panel">
+  <div class="alert-wrap">
+    <div class="alert-section-title"><i class="ti ti-clock" style="font-size:15px" aria-hidden="true"></i> Sin revisar hace más de 7 días</div>
+    <div id="alerts-time"></div>
+    <div class="alert-section-title" style="margin-top:18px"><i class="ti ti-copy" style="font-size:15px" aria-hidden="true"></i> Duplicados potenciales</div>
+    <div id="alerts-dup"></div>
+    <div class="ai-cta">
+      <button class="btn-analyze" id="btn-analyze" onclick="analyzeWithAI()"><i class="ti ti-sparkles" style="font-size:14px" aria-hidden="true"></i> Analizar con IA</button>
+    </div>
+    <div class="analyzing-msg" id="analyzing-msg">Analizando pedidos con IA...</div>
+  </div>
+</div>
+
+<div class="modal-wrap" id="modal-wrap">
+  <div class="modal-box">
+    <div class="modal-head">Nuevo requerimiento <button class="modal-close" onclick="closeModal()">✕</button></div>
+    <div class="modal-body">
+      <div class="field-g"><div class="field-label">Cliente</div><input class="field-input" id="m-cli" placeholder="Ej: Falabella"></div>
+      <div class="field-g"><div class="field-label">Canal</div><select class="field-select" id="m-canal"><option>Slack</option><option>Email</option><option>Llamada</option><option>NPS</option></select></div>
+      <div class="field-g span2"><div class="field-label">Descripción</div><input class="field-input" id="m-ped" placeholder="Describe el requerimiento..."></div>
+      <div class="field-g"><div class="field-label">Fecha</div><input class="field-input" id="m-fecha" type="date"></div>
+      <div class="field-g"><div class="field-label">Urgencia declarada</div><select class="field-select" id="m-urg"><option>Alta</option><option>Media</option><option>Baja</option></select></div>
+      <div class="field-g"><div class="field-label">Urgencia 1–5</div><div class="val-btns" id="m-v-urg"></div></div>
+      <div class="field-g"><div class="field-label">Tamaño cliente 1–5</div><div class="val-btns" id="m-v-tam"></div></div>
+      <div class="field-g"><div class="field-label">Facilidad 1–5</div><div class="val-btns" id="m-v-fac"></div></div>
+      <div class="field-g span2"><div class="score-preview"><span class="sp-label">Score calculado</span><span class="sp-val" id="m-score-preview">—</span></div></div>
+      <div class="field-g span2"><div class="field-label">Último compromiso</div><input class="field-input" id="m-comp" placeholder="Ej: Se revisará en próximo sprint"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeModal()">Cancelar</button>
+      <button class="btn-save" onclick="savePedido()">Guardar pedido</button>
+    </div>
+  </div>
+</div>
+
+<div class="confirm-wrap" id="confirm-wrap">
+  <div class="confirm-box">
+    <h3>Eliminar pedido</h3>
+    <p>¿Estás seguro? Esta acción no se puede deshacer.</p>
+    <div class="confirm-btns">
+      <button class="btn-cancel" onclick="cancelDelete()">Cancelar</button>
+      <button class="btn-save" style="background:#dc2626" onclick="confirmDelete()">Eliminar</button>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<script>
+let weights={urg:40,tam:25,fac:35};
+let sortMode='score',sortDir=1,expanded=null,deleteTarget=null,apiKey='',aiDups=[],dragSrcId=null;
+let mVals={urg:3,tam:3,fac:3};
+
+let pedidos=[
+  {id:1,cliente:'Falabella',pedido:'Exportar reportes de ahorro en PDF',canal:'Slack',urgencia:'Alta',vUrg:5,vTam:5,vFac:4,estado:'Priorizado',fecha:'2026-05-02',compromiso:'Entrega estimada semana 3 de mayo'},
+  {id:2,cliente:'Kavak',pedido:'Integración con SAP Ariba para sincronizar contratos',canal:'Email',urgencia:'Alta',vUrg:5,vTam:5,vFac:1,estado:'Priorizado',fecha:'2026-05-03',compromiso:'Reunión técnica agendada 20 mayo'},
+  {id:3,cliente:'SQM',pedido:'Dashboard de uso se demora más de 10 segundos',canal:'Llamada',urgencia:'Media',vUrg:3,vTam:4,vFac:3,estado:'Sin revisar',fecha:'2026-05-06',compromiso:''},
+  {id:4,cliente:'Addi',pedido:'Agregar usuarios con permisos de solo lectura',canal:'Slack',urgencia:'Media',vUrg:3,vTam:2,vFac:4,estado:'Sin revisar',fecha:'2026-05-07',compromiso:''},
+  {id:5,cliente:'Colbun',pedido:'Alertas automáticas de renovación de software',canal:'Email',urgencia:'Baja',vUrg:1,vTam:3,vFac:4,estado:'Backlog',fecha:'2026-05-08',compromiso:'Se revisará en ciclo de junio'},
+  {id:6,cliente:'Rappi',pedido:'Single sign-on SSO con Okta para compliance',canal:'Llamada',urgencia:'Alta',vUrg:5,vTam:5,vFac:2,estado:'En análisis',fecha:'2026-05-05',compromiso:'No estará listo este mes, se informó al cliente'},
+  {id:7,cliente:'Betterfly',pedido:'Ver benchmarks de precios por software',canal:'Slack',urgencia:'Baja',vUrg:1,vTam:2,vFac:2,estado:'Backlog',fecha:'2026-05-09',compromiso:'Se revisará en ciclo de junio'},
+  {id:8,cliente:'Cornershop',pedido:'Mejor documentación y guías de onboarding',canal:'NPS',urgencia:'Media',vUrg:3,vTam:3,vFac:5,estado:'Priorizado',fecha:'2026-05-04',compromiso:'Documentación lista para el 22 mayo'},
+  {id:9,cliente:'Lemon Cash',pedido:'Conectar Kunzapp con ERP Oracle vía API',canal:'Email',urgencia:'Alta',vUrg:5,vTam:2,vFac:1,estado:'Sin revisar',fecha:'2026-05-12',compromiso:''},
+  {id:10,cliente:'NotCo',pedido:'Ver todos los contratos y condiciones en un solo lugar',canal:'Slack',urgencia:'Media',vUrg:3,vTam:3,vFac:4,estado:'Sin revisar',fecha:'2026-05-14',compromiso:''},
+];
+let nextId=11;
+let manualOrder=pedidos.map(p=>p.id);
+
+const ESTADOS=['Sin revisar','En análisis','Priorizado','En desarrollo','Entregado','Descartado','Backlog'];
+const ECOLORS={'Sin revisar':'#6B7280','En análisis':'#1E40AF','Priorizado':'#4B3FE4','En desarrollo':'#854D0E','Entregado':'#065F46','Descartado':'#991B1B','Backlog':'#9CA3AF'};
+const EBADGE={'Sin revisar':'b-sinrevisar','En análisis':'b-analisis','Priorizado':'b-priorizado','En desarrollo':'b-desarrollo','Entregado':'b-entregado','Descartado':'b-descartado','Backlog':'b-backlog'};
+
+function calcScore(p){return Math.round((p.vUrg*(weights.urg/100)+p.vTam*(weights.tam/100)+p.vFac*(weights.fac/100))*100)/100;}
+function fmtDate(d){if(!d)return'—';const[y,m,dd]=d.split('-');return`${parseInt(dd)} ${'ene feb mar abr may jun jul ago sep oct nov dic'.split(' ')[parseInt(m)-1]}`;}
+function scoreClass(s){return s>=4?'score-hi':s>=3.2?'score-mi':'score-lo';}
+function initials(n){return n.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();}
+function daysSince(d){return d?Math.floor((new Date()-new Date(d))/86400000):0;}
+
+function updateWeights(){
+  const u=parseInt(document.getElementById('w-urg').value)||0;
+  const t=parseInt(document.getElementById('w-tam').value)||0;
+  const f=parseInt(document.getElementById('w-fac').value)||0;
+  weights={urg:u,tam:t,fac:f};
+  const total=u+t+f;
+  ['urg','tam','fac'].forEach(k=>{
+    document.getElementById(`wp-${k}`).textContent=weights[k]+'%';
+    document.getElementById(`wf-${k}`).style.width=weights[k]+'%';
+  });
+  document.getElementById('weight-total').innerHTML=`Total: <span class="${total===100?'total-ok':'total-bad'}">${total}%</span>`;
+  renderAll();
+}
+
+const SORT_KEYS=['score','fecha','nombre','urgencia','estado'];
+function getSorted(list){
+  if(sortMode==='manual')return[...list].sort((a,b)=>manualOrder.indexOf(a.id)-manualOrder.indexOf(b.id));
+  return[...list].sort((a,b)=>{
+    if(sortMode==='score')return(calcScore(b)-calcScore(a))*sortDir;
+    if(sortMode==='fecha')return(a.fecha||'')<(b.fecha||'')?sortDir:-sortDir;
+    if(sortMode==='estado')return(ESTADOS.indexOf(a.estado)-ESTADOS.indexOf(b.estado))*sortDir;
+    if(sortMode==='nombre')return a.cliente<b.cliente?sortDir:-sortDir;
+    if(sortMode==='urgencia')return(['Alta','Media','Baja'].indexOf(a.urgencia)-['Alta','Media','Baja'].indexOf(b.urgencia))*sortDir;
+    return 0;
+  });
+}
+
+function setSort(mode){
+  if(sortMode===mode&&mode!=='manual')sortDir*=-1; else sortDir=1;
+  sortMode=mode;
+  SORT_KEYS.forEach(k=>{
+    const el=document.getElementById(`sa-${k}`);
+    if(el)el.textContent='';
+  });
+  if(mode!=='manual'){
+    const el=document.getElementById(`sa-${mode}`);
+    if(el)el.textContent=sortDir===1?'↓':'↑';
+  }
+  document.querySelectorAll('thead th').forEach(th=>th.classList.remove('sort-active'));
+  renderTabla();
+}
+
+function getFiltered(){
+  const fu=document.getElementById('f-urg').value;
+  const fe=document.getElementById('f-est').value;
+  const fc=document.getElementById('f-cli').value;
+  return getSorted(pedidos.filter(p=>(!fu||p.urgencia===fu)&&(!fe||p.estado===fe)&&(!fc||p.cliente===fc)));
+}
+
+function renderStats(){
+  const alta=pedidos.filter(p=>p.urgencia==='Alta').length;
+  const sinrev=pedidos.filter(p=>p.estado==='Sin revisar').length;
+  const prio=pedidos.filter(p=>p.estado==='Priorizado').length;
+  document.getElementById('stats-row').innerHTML=`
+    <div class="stat-c"><div class="sv sv-p">${pedidos.length}</div><div class="sl">Total pedidos</div></div>
+    <div class="stat-c"><div class="sv sv-r">${alta}</div><div class="sl">Urgencia alta</div></div>
+    <div class="stat-c"><div class="sv sv-o">${sinrev}</div><div class="sl">Sin revisar</div></div>
+    <div class="stat-c"><div class="sv sv-g">${prio}</div><div class="sl">Priorizados</div></div>
+  `;
+}
+
+function renderCliSelect(){
+  const sel=document.getElementById('f-cli');const cur=sel.value;
+  sel.innerHTML='<option value="">Cliente</option>';
+  [...new Set(pedidos.map(p=>p.cliente))].sort().forEach(c=>{const o=document.createElement('option');o.textContent=c;if(c===cur)o.selected=true;sel.appendChild(o);});
+}
+
+function renderTabla(){
+  const filtered=getFiltered();
+  const tbody=document.getElementById('tbody');
+  tbody.innerHTML='';
+  document.getElementById('table-empty').style.display=filtered.length?'none':'block';
+  document.getElementById('filter-count').textContent=filtered.length<pedidos.length?`${filtered.length}/${pedidos.length} pedidos`:`${pedidos.length} pedidos`;
+
+  filtered.forEach(p=>{
+    const sc=calcScore(p);
+    const tr=document.createElement('tr');
+    if(expanded===p.id)tr.classList.add('expanded');
+    tr.draggable=sortMode==='manual';
+    tr.dataset.id=p.id;
+    if(sortMode==='manual'){
+      tr.addEventListener('dragstart',e=>{dragSrcId=p.id;tr.classList.add('dragging');e.dataTransfer.effectAllowed='move';});
+      tr.addEventListener('dragend',()=>tr.classList.remove('dragging'));
+      tr.addEventListener('dragover',e=>{e.preventDefault();tr.classList.add('drag-over');});
+      tr.addEventListener('dragleave',()=>tr.classList.remove('drag-over'));
+      tr.addEventListener('drop',e=>{
+        e.preventDefault();tr.classList.remove('drag-over');
+        if(dragSrcId===p.id)return;
+        const fi=manualOrder.indexOf(dragSrcId),ti=manualOrder.indexOf(p.id);
+        if(fi<0||ti<0)return;
+        manualOrder.splice(fi,1);manualOrder.splice(ti,0,dragSrcId);
+        renderTabla();
+      });
+    }
+    const estBadge=`<span class="badge ${EBADGE[p.estado]||'b-sinrevisar'}">${p.estado}</span>`;
+    tr.innerHTML=`
+      <td><span class="drag-handle" title="Activar orden manual desde el header ⠿">${sortMode==='manual'?'⠿':'·'}</span></td>
+      <td style="font-weight:600">${p.cliente}</td>
+      <td style="color:var(--km);font-size:11px">${p.pedido}</td>
+      <td style="color:var(--km)">${fmtDate(p.fecha)}</td>
+      <td><span class="badge b-${p.urgencia.toLowerCase()}">${p.urgencia}</span></td>
+      <td><span class="${scoreClass(sc)}">${sc.toFixed(2)}</span><span class="score-sub">${p.vUrg}/${p.vTam}/${p.vFac}</span></td>
+      <td>
+        <select class="est-sel" onclick="event.stopPropagation()" onchange="cambiarEstado(${p.id},this.value)">
+          ${ESTADOS.map(e=>`<option${e===p.estado?' selected':''}>${e}</option>`).join('')}
+        </select>
+      </td>
+      <td><div class="action-cell"><button class="ic-btn del" onclick="event.stopPropagation();askDelete(${p.id})" aria-label="Eliminar"><i class="ti ti-trash" style="font-size:14px"></i></button></div></td>
+    `;
+    tr.addEventListener('click',()=>{expanded=expanded===p.id?null:p.id;renderTabla();});
+    tbody.appendChild(tr);
+
+    const dr=document.createElement('tr');dr.className='detail-row';dr.draggable=false;
+    dr.innerHTML=`<td colspan="8"><div class="detail-box${expanded===p.id?' open':''}" id="det-${p.id}">
+      <div class="detail-grid">
+        <div class="dg-item"><div class="di-l">Canal</div><div class="di-v">${p.canal}</div></div>
+        <div class="dg-item"><div class="di-l">Fecha</div><div class="di-v">${fmtDate(p.fecha)}</div></div>
+        <div class="dg-item"><div class="di-l">Score actual</div><div class="di-v">${sc.toFixed(2)}</div></div>
+        <div class="dg-item"><div class="di-l">Último compromiso</div><div class="di-v">${p.compromiso||'—'}</div></div>
+      </div>
+      <div class="score-breakdown">
+        <div class="sb-title">Ajustar valores del score</div>
+        ${[['Urgencia','vUrg','urg'],['Tamaño cliente','vTam','tam'],['Facilidad','vFac','fac']].map(([lbl,key,wk])=>`
+          <div class="sb-row">
+            <span class="sb-label">${lbl} (peso ${weights[wk]}%)</span>
+            ${[1,2,3,4,5].map(n=>`<button class="sb-val${p[key]===n?' selected':''}" onclick="event.stopPropagation();setVal(${p.id},'${key}',${n})">${n}</button>`).join('')}
+            <span class="sb-result">${p[key]}/5</span>
+          </div>`).join('')}
+      </div>
+    </div></td>`;
+    tbody.appendChild(dr);
+  });
+  renderCharts();
+}
+
+function setVal(id,key,val){const p=pedidos.find(x=>x.id===id);if(p){p[key]=val;renderTabla();}}
+
+function renderCharts(){
+  const tot=pedidos.length||1;
+  const alta=pedidos.filter(p=>p.urgencia==='Alta').length;
+  const media=pedidos.filter(p=>p.urgencia==='Media').length;
+  const baja=pedidos.filter(p=>p.urgencia==='Baja').length;
+  document.getElementById('chart-urg').innerHTML=`
+    <div class="bar-group"><div class="bar-row"><span>Alta</span><span style="color:#991B1B;font-weight:600">${alta}</span></div><div class="track"><div class="fill f-r" style="width:${Math.round(alta/tot*100)}%"></div></div></div>
+    <div class="bar-group"><div class="bar-row"><span>Media</span><span style="color:#92400E;font-weight:600">${media}</span></div><div class="track"><div class="fill f-o" style="width:${Math.round(media/tot*100)}%"></div></div></div>
+    <div class="bar-group"><div class="bar-row"><span>Baja</span><span style="color:var(--kad);font-weight:600">${baja}</span></div><div class="track"><div class="fill f-g" style="width:${Math.round(baja/tot*100)}%"></div></div></div>
+  `;
+  const counts={};ESTADOS.forEach(e=>{counts[e]=pedidos.filter(p=>p.estado===e).length;});
+  document.getElementById('chart-est').innerHTML=ESTADOS.filter(e=>counts[e]>0).map(e=>`
+    <div class="est-row"><span><span class="edot" style="background:${ECOLORS[e]}"></span>${e}</span><span style="color:${ECOLORS[e]};font-weight:600">${counts[e]}</span></div>
+  `).join('');
+}
+
+function renderKanban(){
+  const COLS=['Sin revisar','En análisis','Priorizado','En desarrollo','Entregado','Descartado','Backlog'];
+  const HCLASS={'Sin revisar':'kh-sin','En análisis':'kh-ana','Priorizado':'kh-pri','En desarrollo':'kh-dev','Entregado':'kh-ent','Descartado':'kh-des','Backlog':'kh-back'};
+  document.getElementById('kanban-grid').innerHTML=COLS.map(col=>{
+    const cards=pedidos.filter(p=>p.estado===col);
+    return`<div class="kan-col">
+      <div class="kan-head ${HCLASS[col]}">${col}<span>${cards.length}</span></div>
+      ${cards.length?cards.map(p=>`<div class="kan-card">
+        <div class="kc-top"><span class="kc-cli">${p.cliente}</span><span class="badge b-${p.urgencia.toLowerCase()}">${p.urgencia}</span></div>
+        <div class="kc-ped">${p.pedido}</div>
+        <div class="kc-date">${fmtDate(p.fecha)} · ${calcScore(p).toFixed(2)}</div>
+      </div>`).join(''):`<div style="padding:12px;font-size:11px;color:var(--km);text-align:center">—</div>`}
+    </div>`;
+  }).join('');
+}
+
+function renderClientes(){
+  document.getElementById('cli-grid').innerHTML=[...pedidos].sort((a,b)=>calcScore(b)-calcScore(a)).map(p=>`
+    <div class="cli-card" onclick="setView('tabla',document.querySelector('.nav-tab'));document.getElementById('f-cli').value='${p.cliente}';renderTabla()">
+      <div class="cc-header">
+        <div class="cc-avatar">${initials(p.cliente)}</div>
+        <div><div class="cc-name">${p.cliente}</div><div class="cc-date">${fmtDate(p.fecha)}</div></div>
+      </div>
+      <div class="cc-ped">${p.pedido}</div>
+      <div class="cc-tags">
+        <span class="badge b-${p.urgencia.toLowerCase()}">${p.urgencia}</span>
+        <span class="badge ${EBADGE[p.estado]||'b-sinrevisar'}">${p.estado}</span>
+        <span style="font-size:11px;color:var(--km);margin-left:2px">${calcScore(p).toFixed(2)} pts</span>
+      </div>
+    </div>`).join('');
+}
+
+function renderAlertas(){
+  const old=pedidos.filter(p=>p.estado==='Sin revisar'&&daysSince(p.fecha)>7);
+  document.getElementById('alerts-time').innerHTML=old.length?old.map(p=>`<div class="alert-item">
+    <div class="ai-head"><span class="ai-title">${p.cliente} — ${p.pedido.slice(0,48)}...</span><span class="ai-badge">+${daysSince(p.fecha)}d sin revisar</span></div>
+    <div class="ai-desc">Ingresado el ${fmtDate(p.fecha)}. Requiere acción del PM.</div>
+  </div>`).join(''):`<div class="ai-empty">Sin pedidos en esta condición.</div>`;
+  document.getElementById('alerts-dup').innerHTML=aiDups.length?aiDups.map(d=>`<div class="alert-item">
+    <div class="ai-head"><span class="ai-title">${d.title}</span><span class="ai-badge">Similitud ${d.score}%</span></div>
+    <div class="ai-desc">${d.desc}</div>
+  </div>`).join(''):`<div class="ai-empty">Usa el botón de abajo para analizar duplicados con IA.<br><span style="font-size:11px">Requiere API Key en Configuración.</span></div>`;
+}
+
+async function analyzeWithAI(){
+  if(!apiKey){alert('Configura tu API Key en "Configuración" primero.');return;}
+  const btn=document.getElementById('btn-analyze');
+  const msg=document.getElementById('analyzing-msg');
+  btn.disabled=true;msg.style.display='block';
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,
+        messages:[{role:'user',content:`Analiza estos requerimientos y detecta pares semánticamente similares o duplicados. Responde SOLO con JSON array, sin markdown. Formato: [{"title":"Cliente A vs Cliente B","score":85,"desc":"Razón breve"}]. Si no hay: []. Lista:\n${pedidos.map(p=>`#${p.id} ${p.cliente}: ${p.pedido}`).join('\n')}`}]})
+    });
+    const data=await res.json();
+    const txt=data.content?.find(b=>b.type==='text')?.text||'[]';
+    aiDups=JSON.parse(txt.replace(/```json|```/g,'').trim());
+  }catch(e){alert('Error al analizar. Verifica tu API Key.');}
+  btn.disabled=false;msg.style.display='none';
+  renderAlertas();
+}
+
+function buildValBtns(cid,key){
+  const c=document.getElementById(cid);if(!c)return;
+  c.innerHTML=[1,2,3,4,5].map(n=>`<button class="val-btn${mVals[key]===n?' sel':''}" onclick="setMVal('${key}',${n})">${n}</button>`).join('');
+}
+function setMVal(key,val){
+  mVals[key]=val;
+  ['urg','tam','fac'].forEach(k=>buildValBtns(`m-v-${k}`,k));
+  const sc=Math.round((mVals.urg*(weights.urg/100)+mVals.tam*(weights.tam/100)+mVals.fac*(weights.fac/100))*100)/100;
+  document.getElementById('m-score-preview').textContent=sc.toFixed(2);
+}
+
+function openModal(){
+  mVals={urg:3,tam:3,fac:3};
+  document.getElementById('modal-wrap').style.display='flex';
+  document.getElementById('m-fecha').value=new Date().toISOString().slice(0,10);
+  ['urg','tam','fac'].forEach(k=>buildValBtns(`m-v-${k}`,k));
+  setMVal('urg',3);
+  ['m-cli','m-ped','m-comp'].forEach(id=>{document.getElementById(id).value='';});
+}
+function closeModal(){document.getElementById('modal-wrap').style.display='none';}
+function savePedido(){
+  const cli=document.getElementById('m-cli').value.trim();
+  const ped=document.getElementById('m-ped').value.trim();
+  if(!cli||!ped){alert('Cliente y descripción son obligatorios.');return;}
+  const np={id:nextId++,cliente:cli,pedido:ped,canal:document.getElementById('m-canal').value,
+    urgencia:document.getElementById('m-urg').value,vUrg:mVals.urg,vTam:mVals.tam,vFac:mVals.fac,
+    estado:'Sin revisar',fecha:document.getElementById('m-fecha').value,compromiso:document.getElementById('m-comp').value};
+  pedidos.push(np);manualOrder.push(np.id);
+  closeModal();renderCliSelect();renderAll();
+}
+function cambiarEstado(id,val){pedidos.find(x=>x.id===id).estado=val;renderAll();}
+function askDelete(id){deleteTarget=id;document.getElementById('confirm-wrap').style.display='flex';}
+function cancelDelete(){document.getElementById('confirm-wrap').style.display='none';deleteTarget=null;}
+function confirmDelete(){
+  if(deleteTarget){pedidos=pedidos.filter(p=>p.id!==deleteTarget);manualOrder=manualOrder.filter(x=>x!==deleteTarget);}
+  document.getElementById('confirm-wrap').style.display='none';deleteTarget=null;renderAll();
+}
+function toggleSettings(){const s=document.getElementById('settings-bar');s.style.display=s.style.display==='block'?'none':'block';}
+function saveKey(){
+  apiKey=document.getElementById('api-key-input').value.trim();
+  document.getElementById('key-status').innerHTML=apiKey?`<span class="key-ok"><i class="ti ti-check" style="font-size:12px"></i> API Key guardada</span>`:`<span class="key-none">Sin API Key configurada</span>`;
+}
+function setView(name,el){
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.view-panel').forEach(v=>v.classList.remove('active'));
+  if(el&&el.classList)el.classList.add('active');
+  document.getElementById('view-'+name).classList.add('active');
+  if(name==='kanban')renderKanban();
+  else if(name==='clientes')renderClientes();
+  else if(name==='alertas')renderAlertas();
+  else renderTabla();
+}
+function resetFilters(){['f-urg','f-est','f-cli'].forEach(id=>{document.getElementById(id).value='';});renderTabla();}
+function renderAll(){
+  renderStats();
+  const a=document.querySelector('.view-panel.active');
+  if(a){const id=a.id.replace('view-','');
+    if(id==='tabla')renderTabla();else if(id==='kanban')renderKanban();else if(id==='clientes')renderClientes();else if(id==='alertas')renderAlertas();
+  }
+}
+renderCliSelect();renderAll();
+</script>
